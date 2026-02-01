@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SunniSarc | Final Polished</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 1. متغیرها --- */
+        :root {
+            /* --- Dark Mode (Default) --- */
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --bg-header: #2d2d2d;
+            --bg-element: #333333;
+            --bg-mobile-menu: #1a1a1a;
+            
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            
+            --primary: #bb86fc;
+            --accent: #03dac6;
+            --accent-red: #cf6679;
+            
+            --border-color: #333333;
+            --shadow: 0 5px 20px rgba(0,0,0,0.5);
+
+            --logo-size: 130px;
+            --header-height: 70px;
+            --radius-L: 50px;
+            --radius-M: 20px;
+        }
+
+        /* --- Light Mode --- */
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-header: #2c3e50;
+            --bg-element: #e4e6eb;
+            --bg-mobile-menu: #ffffff;
+
+            --text-main: #2c3e50;
+            --text-muted: #65676b;
+
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --accent-red: #e74c3c;
+
+            --border-color: #ddd;
+            --shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 20px;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* --- 2. نوار بالا --- */
+        .top-info-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5% 5px;
+            font-size: 0.85rem; color: var(--text-muted);
+            background: var(--bg-body); /* همرنگ بادی */
+        }
+        .socials-top-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 35px; height: 35px; background-color: var(--bg-element);
+            border-radius: 50%; margin-left: 10px; color: var(--text-main); transition: 0.3s;
+        }
+        .socials-top-icon:hover { background-color: var(--accent); color: white; }
+        .left-controls { display: flex; align-items: center; gap: 10px; }
+        .control-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: var(--bg-element); padding: 5px 15px; border-radius: 20px;
+            color: var(--text-main); cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+        }
+        .control-btn:hover { border-color: var(--accent); }
+
+        /* --- 3. هدر کپسولی --- */
+        .header-wrapper {
+            position: relative; height: var(--header-height);
+            background-color: var(--bg-header);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; color: white;
+            z-index: 100; width: 95%; max-width: 1280px;
+            margin: 5px auto 0; border-radius: var(--radius-L);
+            box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.05);
+        }
+        body.light-mode .header-wrapper { color: white; }
+
+        /* منوهای دسکتاپ */
+        .nav-menu { display: flex; gap: 25px; font-weight: 500; font-size: 1rem; }
+        .nav-menu a:hover { color: var(--accent); }
+        .auth-menu { display: flex; gap: 15px; font-size: 0.95rem; }
+        .auth-menu a:hover { color: var(--accent); }
+
+        /* دکمه‌های موبایل (پیش‌فرض مخفی) */
+        .mobile-trigger { display: none; font-size: 1.5rem; cursor: pointer; color: white; }
+        
+        /* LOGO */
+        .logo-badge {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            width: var(--logo-size); height: var(--logo-size);
+            background-color: var(--bg-header);
+            border: 8px solid var(--bg-body); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow); z-index: 101; overflow: hidden;
+        }
+
+        /* --- 4. اسلایدر (اصلاح شده) --- */
+        .slider-container {
+            position: relative; width: 100%; height: 550px; /* کمی بلندتر */
+            overflow: hidden; margin-top: -35px; padding-top: 35px; z-index: 1;
+        }
+        /* سایه نرم از پایین */
+        .slider-container::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px;
+            background: linear-gradient(to top, var(--bg-body), transparent);
+            z-index: 5; pointer-events: none;
+        }
+
+        .slide {
+            position: absolute; top: 0; right: 0; width: 100%; height: 100%;
+            opacity: 0; 
+            /* ترنزیشن بسیار نرم */
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide.active { opacity: 1; }
+        .slide::before {
+            content: ''; position: absolute; top:0; right:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.3); /* ماسک کلی */
+        }
+
+        /* نقاط بولت (Dots) */
+        .slider-dots {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 12px; z-index: 10;
+        }
+        .dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: rgba(255,255,255,0.3); cursor: pointer;
+            transition: all 0.5s ease; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .dot.active {
+            background: var(--accent); transform: scale(1.3);
+            box-shadow: 0 0 10px var(--accent); border-color: transparent;
+        }
+
+        /* --- 5. سایر بخش‌ها (بدون تغییر) --- */
+        .category-scroll-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; position: relative; z-index: 6; }
+        .cat-list { display: flex; gap: 20px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
+        .cat-list::-webkit-scrollbar { display: none; }
+        .cat-item {
+            min-width: 150px; background: var(--bg-card); padding: 25px;
+            text-align: center; border-radius: var(--radius-M); box-shadow: var(--shadow);
+            font-weight: 700; color: var(--text-main); transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 15px; border: 1px solid var(--border-color);
+        }
+        .cat-item:hover { transform: translateY(-7px); border-color: var(--accent); }
+        .cat-item i { font-size: 1.8rem; color: var(--accent); }
+
+        .main-content { max-width: 1200px; margin: 0 auto 50px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-M); overflow: hidden;
+            box-shadow: var(--shadow); transition: 0.3s; display: flex; flex-direction: column; border: 1px solid var(--border-color);
+        }
+        .card:hover { transform: translateY(-8px); border-color: var(--primary); }
+        .card-img-top { height: 240px; }
+        .card-body { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary); font-weight: 800; text-align: center; }
+        .card-divider { width: 60px; height: 3px; background: linear-gradient(to left, var(--accent), transparent); margin: 0 auto 20px auto; border-radius: 4px; }
+        .card-text { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px; flex-grow: 1; text-align: right; }
+        .btn-card { align-self: center; background: transparent; color: var(--accent); padding: 10px 35px; border-radius: 50px; font-weight: 700; border: 2px solid var(--accent); transition: 0.3s; }
+        .btn-card:hover { background: var(--accent); color: white; }
+
+        /* Video */
+        .video-wrapper { max-width: 1200px; margin: 0 auto 80px; padding: 30px; display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; background: var(--bg-card); border-radius: 30px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        .video-player-box { background: #000; border-radius: 20px; min-height: 450px; display: flex; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden; border: 1px solid #333; }
+        .main-thumb { position: absolute; width: 100%; height: 100%; opacity: 0.6; transition: 0.3s; }
+        .play-link { z-index: 5; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .play-btn-large { font-size: 5rem; color: rgba(255,255,255,0.8); filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); transition: 0.3s; }
+        .play-link:hover .play-btn-large { transform: scale(1.1); color: #ff0000; }
+        .video-title-overlay { position: absolute; bottom: 20px; right: 20px; z-index: 2; font-size: 1.1rem; font-weight: bold; text-shadow: 0 2px 10px black; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 10px; border-right: 4px solid var(--accent); color: white; }
+        .playlist { display: flex; flex-direction: column; gap: 20px; max-height: 450px; overflow-y: auto; padding-left: 10px; }
+        .playlist-item { display: flex; align-items: center; gap: 15px; padding: 10px; background: var(--bg-element); border-radius: 60px; transition: 0.3s; cursor: pointer; border: 1px solid transparent; }
+        .playlist-item:hover { background-color: var(--bg-header); border-color: var(--accent); transform: translateX(-5px); }
+        .thumb-circle { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border-color); flex-shrink: 0; }
+        .playlist-item:hover .thumb-circle { border-color: var(--accent); }
+        .playlist-info h4 { font-size: 0.9rem; margin-bottom: 5px; color: var(--text-main); font-weight: 600; }
+        .playlist-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* --- 6. فوتر --- */
+        .site-footer { background-color: var(--bg-header); color: #ccc; padding: 80px 20px 30px; margin-top: 50px; border-radius: 50px 50px 0 0; border-top: 1px solid var(--border-color); }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; margin-bottom: 50px; text-align: right; }
+        .footer-col h3 { font-size: 1.3rem; margin-bottom: 25px; color: white; font-weight: 700; position: relative; padding-bottom: 10px; }
+        .footer-col h3::after { content:''; position: absolute; bottom:0; right:0; width: 40px; height: 3px; background: var(--accent); }
+        .footer-center { text-align: center; }
+        .footer-center h3::after { right: 50%; transform: translateX(50%); }
+
+        .social-icons { display: flex; gap: 15px; justify-content: flex-start; /* کنار هم */ }
+        .social-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; color: white; }
+        .social-btn:hover { background: var(--accent); color: white; transform: translateY(-5px); }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+
+        /* --- 7. منوی موبایل (Sidebar) --- */
+        .mobile-sidebar {
+            position: fixed; top: 0; right: -280px; /* مخفی در راست */
+            width: 280px; height: 100vh;
+            background-color: var(--bg-mobile-menu);
+            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+            z-index: 200; padding: 30px;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .mobile-sidebar.open { right: 0; }
+        
+        .mobile-overlay-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 199;
+            display: none; opacity: 0; transition: 0.3s;
+        }
+        .mobile-overlay-bg.open { display: block; opacity: 1; }
+
+        .mobile-link { font-size: 1.1rem; color: var(--text-main); padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .close-btn { align-self: flex-end; font-size: 1.5rem; cursor: pointer; color: var(--accent-red); margin-bottom: 20px; }
+
+
+        /* --- ریسپانسیو --- */
+        @media (max-width: 900px) {
+            .nav-menu, .auth-menu { display: none; }
+            .header-wrapper { justify-content: space-between; width: 95%; padding: 0 20px; }
+            
+            /* نمایش دکمه‌های موبایل */
+            .mobile-trigger { display: block; }
+
+            .logo-badge { width: 100px; height: 100px; border-width: 6px; }
+            .slider-container { height: 350px; }
+            
+            /* فوتر در موبایل وسط چین شود */
+            .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .footer-col h3::after { right: 50%; transform: translateX(50%); }
+            .social-icons { justify-content: center; } /* در موبایل وسط، در دسکتاپ راست */
+            
+            .video-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-info-bar">
+        <div class="socials-top">
+            <a href="#" class="socials-top-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="socials-top-icon"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" class="socials-top-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="left-controls">
+            <div class="control-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
+            <div class="control-btn lang-selector"><i class="fas fa-globe"></i> En <i class="fas fa-caret-down"></i></div>
+        </div>
+    </div>
+
+    <header class="header-wrapper">
+        <nav class="nav-menu">
+            <a href="#">خانه</a>
+            <a href="#">پروژه‌ها</a>
+            <a href="#">درباره ما</a>
+        </nav>
+        <div class="mobile-trigger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+
+
+        <div class="logo-badge">
+            <img src="https://picsum.photos/id/1015/200/200" alt="Logo">
+        </div>
+
+
+        <div class="auth-menu">
+            <a href="#">ورود</a> | <a href="#">ثبت‌نام</a>
+        </div>
+        <div class="mobile-trigger"><i class="far fa-user"></i></div>
+    </header>
+
+    <div class="mobile-overlay-bg" id="mobileOverlay" onclick="toggleMenu()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="close-btn" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+        <a href="#" class="mobile-link">خانه</a>
+        <a href="#" class="mobile-link">پروژه‌ها</a>
+        <a href="#" class="mobile-link">درباره ما</a>
+        <a href="#" class="mobile-link">تماس با ما</a>
+        <a href="#" class="mobile-link" style="color: var(--accent);">ورود / ثبت نام</a>
+    </div>
+
+    <section class="slider-container">
+        <div class="slide active"><img src="https://picsum.photos/1920/1080?random=1"></div>
+        <div class="slide"><img src="https://picsum.photos/1920/1080?random=2"></div>
+        <div class="slide"><img src="https://picsum.photos/1920/1080?random=3"></div>
+        <div class="slide"><img src="https://picsum.photos/1920/1080?random=4"></div>
+        <div class="slide"><img src="https://picsum.photos/1920/1080?random=5"></div>
+
+        <div class="slider-dots">
+            <span class="dot active" onclick="setSlide(0)"></span>
+            <span class="dot" onclick="setSlide(1)"></span>
+            <span class="dot" onclick="setSlide(2)"></span>
+            <span class="dot" onclick="setSlide(3)"></span>
+            <span class="dot" onclick="setSlide(4)"></span>
+        </div>
+    </section>
+
+    <div class="category-scroll-wrapper">
+        <div class="cat-list">
+            <div class="cat-item"><i class="fas fa-book-open"></i> علوم قرآن</div>
+            <div class="cat-item"><i class="fas fa-mosque"></i> فقه اسلامی</div>
+            <div class="cat-item"><i class="fas fa-history"></i> تاریخ</div>
+            <div class="cat-item"><i class="fas fa-users"></i> خانواده</div>
+            <div class="cat-item"><i class="fas fa-pen-fancy"></i> مقالات</div>
+            <div class="cat-item"><i class="fas fa-video"></i> رسانه</div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <article class="card">
+            <img src="https://picsum.photos/600/400?random=10" class="card-img-top">
+            <div class="card-body">
+                <h3 class="card-title">اهمیت پژوهش</h3>
+                <div class="card-divider"></div>
+                <p class="card-text">تحقیق و پژوهش، دروازه‌ای به سوی کشف حقایق است.</p>
+                <button class="btn-card">ادامه مطلب</button>
+            </div>
+        </article>
+        <article class="card">
+            <img src="https://picsum.photos/600/400?random=11" class="card-img-top">
+            <div class="card-body">
+                <h3 class="card-title">همایش‌ها</h3>
+                <div class="card-divider" style="background: linear-gradient(to left, var(--accent-red), transparent);"></div>
+                <p class="card-text">برگزاری نشست‌های تخصصی با حضور اندیشمندان.</p>
+                <button class="btn-card" style="border-color: var(--accent-red); color: var(--accent-red);">ادامه مطلب</button>
+            </div>
+        </article>
+        <article class="card">
+            <img src="https://picsum.photos/600/400?random=12" class="card-img-top">
+            <div class="card-body">
+                <h3 class="card-title">کتابخانه</h3>
+                <div class="card-divider" style="background: linear-gradient(to left, var(--accent), transparent);"></div>
+                <p class="card-text">دسترسی به هزاران منبع معتبر علمی.</p>
+                <button class="btn-card" style="border-color: var(--accent); color: var(--accent);">ادامه مطلب</button>
+            </div>
+        </article>
+    </main>
+
+    <section class="video-wrapper">
+        <div class="video-player-box" id="mainPlayer">
+            <img src="https://img.youtube.com/vi/YckLMj5I1ZU/maxresdefault.jpg" class="main-thumb" id="playerThumb">
+            <a href="https://www.youtube.com/watch?v=YckLMj5I1ZU" target="_blank" class="play-link" id="playerLink">
+                <i class="far fa-play-circle play-btn-large"></i>
+            </a>
+            <div class="video-title-overlay" id="playerTitle">فعالیت های مرکز مطالعات</div>
+        </div>
+        <div class="playlist">
+            <div class="playlist-item" onclick="changeVideo('YckLMj5I1ZU', 'فعالیت های مرکز مطالعات')">
+                <div class="thumb-circle"><img src="https://img.youtube.com/vi/YckLMj5I1ZU/mqdefault.jpg"></div>
+                <div class="playlist-info"><h4>فعالیت ها و برنامه ها</h4><p>04:30</p></div>
+            </div>
+            <div class="playlist-item" onclick="changeVideo('5g31DovuSCA', 'علی شیر خدا')">
+                <div class="thumb-circle"><img src="https://img.youtube.com/vi/5g31DovuSCA/mqdefault.jpg"></div>
+                <div class="playlist-info"><h4>علی شیر خدا</h4><p>00:30</p></div>
+            </div>
+             <div class="playlist-item" onclick="changeVideo('zhddLUKCo98', 'جلسه1 | درس صحیح البخاری')">
+                <div class="thumb-circle"><img src="https://img.youtube.com/vi/zhddLUKCo98/mqdefault.jpg"></div>
+                <div class="playlist-info"><h4>درس صحیح البخاری</h4><p>52:19</p></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>شبکه‌های اجتماعی</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-col footer-center">
+                <h3>دسترسی سریع</h3>
+                <ul class="footer-links">
+                    <li><a href="#">صفحه اصلی</a></li>
+                    <li><a href="#">تماس با ما</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>درباره ما</h3>
+                <p style="line-height: 1.8; opacity: 0.7;">مرکز مطالعات اهل سنت.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">© ۲۰۲۴ تمامی حقوق محفوظ است.</div>
+    </footer>
+
+    <script>
+        // 1. Slider Logic (Dots + Soft Transition)
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlider() {
+            // Remove active from all
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            // Add active to current
+            slides[slideIndex].classList.add('active');
+            dots[slideIndex].classList.add('active');
+        }
+
+        function setSlide(n) {
+            slideIndex = n;
+            updateSlider();
+        }
+
+        function nextSlide() {
+            slideIndex = (slideIndex + 1) % slides.length;
+            updateSlider();
+        }
+        
+        // Auto play (5 seconds)
+        setInterval(nextSlide, 5000);
+
+
+        // 2. Mobile Menu Logic
+        const sidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('mobileOverlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+
+        // 3. Video & Theme Logic (Same as before)
+        function changeVideo(id, title) {
+            const playerThumb = document.getElementById('playerThumb');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerLink = document.getElementById('playerLink');
+            
+            playerThumb.style.opacity = '0';
+            setTimeout(() => {
+                playerThumb.src = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+                playerTitle.textContent = title;
+                playerLink.href = `https://www.youtube.com/watch?v=${id}`;
+                playerThumb.style.opacity = '0.6';
+            }, 300);
+        }
+
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const icon = themeToggle.querySelector('i');
+            if(body.classList.contains('light-mode')) {
+                icon.className = 'fas fa-sun';
+                icon.style.color = '#f39c12';
+            } else {
+                icon.className = 'fas fa-moon';
+                icon.style.color = '';
+            }
+        });
+    </script>
+</body>
+</html>
